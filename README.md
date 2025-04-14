@@ -1,7 +1,8 @@
-
+# World Population Dashboard
+#### Dashboard made using D3 to visualize multiple datasets regarding world poulation
 ![image_](https://github.com/user-attachments/assets/a0c44812-8b65-4dec-94d2-944e0b998451)
 
-To run: <br/>
+## To run: <br/>
 
 - Frontend
   - `cd Dashboard-frontend`
@@ -12,5 +13,5 @@ To run: <br/>
   - `python3 -m pip install -r requirements.txt`
   - `python3 server.py`
 
-### Check Deployment
+## Check Deployment
 [Click here to visit site](https://world-population-dashboard.vercel.app/)
