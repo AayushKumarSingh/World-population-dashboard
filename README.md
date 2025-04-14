@@ -11,3 +11,6 @@ To run: <br/>
   - `python3 -m venv venv && .\venv\Scripts\activate`
   - `python3 -m pip install -r requirements.txt`
   - `python3 server.py`
+
+### Check Deployment
+[Click here to visit site](https://world-population-dashboard.vercel.app/)
