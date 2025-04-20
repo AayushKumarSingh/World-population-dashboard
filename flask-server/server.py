@@ -1,29 +1,34 @@
-import pandas
+import pandas as pd
 from flask import Flask, jsonify
-from flask_cors import CORS, cross_origin
+from flask_cors import CORS
 
 app = Flask(__name__)
-cors = CORS(app)
-app.config['CORS_HEADERS'] = 'Content-Type'
+CORS(app)
 
-pop_df = pandas.read_csv("./world_population_data.csv")
+# Load the population data
+pop_df = pd.read_csv("./world_population_data.csv")
 top10pop = pop_df[["country", "2023 population"]].nlargest(10, "2023 population")
-top10pop.set_index("country", inplace=True)
 
-rel_df = pandas.read_csv("./rounded_population.csv")
+# Load the religion data
+rel_df = pd.read_csv("./rounded_population.csv")
 rel_df = rel_df.query("Year == 2020 and Region == ' World'")
 rel_df.drop(columns=["Year", "Region", "Country", "All Religions"], inplace=True)
-rel_2022 = rel_df.to_dict()
 
+@app.route("/data", methods=["GET"])
+def get_data():
+    # Prepare bar chart data
+    bar_chart_data = top10pop.rename(columns={"2023 population": "population"}).to_dict(orient="records")
 
-@app.route("/population", methods=['GET'])
-@cross_origin()
-def getPopulation():
-    return jsonify(top10pop.to_dict())
+    # Prepare pie chart data
+    pie_chart_data = [{"name": key, "value": int(value)} for key, value in rel_df.iloc[0].items()]
 
+    # Combine data into a single response
+    data = {
+        "barChartData": bar_chart_data,
+        "pieChartData": pie_chart_data,
+        
+    }
+    return jsonify(data)
 
-@app.route("/religion", methods=['GET'])
-@cross_origin()
-def getReligion():
-    return jsonify({key: list(rel_2022[key].values())[-1] for key in rel_2022.keys()})
-
+if __name__ == "__main__":
+    app.run(debug=True)

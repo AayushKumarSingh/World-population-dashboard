@@ -5,6 +5,7 @@ import { useState } from "react";
 const offsetX = 70;
 
 const PieChart = ({ width, height, data }) => {
+  const [hoveredIndex, setHoveredIndex] = useState(null); // Track the hovered segment
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [tooltipData, setTooltipData] = useState({
     ...data[0],
@@ -38,6 +39,9 @@ const PieChart = ({ width, height, data }) => {
 
   const arc = d3.arc().innerRadius(0).outerRadius(outerRadius);
 
+  // A separate arc generator for the hovered segment with increased radius
+  const arcHover = d3.arc().innerRadius(0).outerRadius(outerRadius + 10);
+
   // A separate arc generator for labels.
   const labelRadius = arc.outerRadius()() * 0.75;
   const arcLabel = d3.arc().innerRadius(labelRadius).outerRadius(labelRadius);
@@ -53,9 +57,17 @@ const PieChart = ({ width, height, data }) => {
         className="viz"
       >
         {arcs.map((d, i) => (
-          <g key={d.data.name} stroke="white"
-            onMouseOver={() => setTooltipVisible(true)}
-            onMouseLeave={() => setTooltipVisible(false)}
+          <g
+            key={d.data.name}
+            stroke="white"
+            onMouseOver={() => {
+              setTooltipVisible(true);
+              setHoveredIndex(i); // Set the hovered index
+            }}
+            onMouseLeave={() => {
+              setTooltipVisible(false);
+              setHoveredIndex(null); // Reset the hovered index
+            }}
             onMouseMove={() => {
               setTooltipData({
                 ...data[i],
@@ -63,8 +75,16 @@ const PieChart = ({ width, height, data }) => {
                 y: arcLabel.centroid(d)[1],
               });
             }}
+            style={{
+              transition: "transform 0.3s ease",
+              transform: hoveredIndex === i ? "scale(1.1)" : "scale(1)",
+            }}
           >
-            <path d={arc(d)} fill={color(data[i].name)} />
+            <path
+              d={hoveredIndex === i ? arcHover(d) : arc(d)} // Use larger radius for hovered segment
+              fill={color(data[i].name)}
+              style={{ transition: "0.25s ease" }}
+            />
             <text
               x={arcLabel.centroid(d)[0]}
               y={arcLabel.centroid(d)[1]}
@@ -74,9 +94,7 @@ const PieChart = ({ width, height, data }) => {
               strokeWidth={0}
               fill="white"
             >
-              {percentageData[d.data.name] > 5
-                ? `${percentageData[d.data.name]}%`
-                : ""}
+              {percentageData[d.data.name] > 5 ? `${percentageData[d.data.name]}%` : ""}
             </text>
           </g>
         ))}
@@ -115,7 +133,9 @@ const PieChart = ({ width, height, data }) => {
             y={tooltipData.y + 10}
             stroke="#cccccc"
             strokeWidth="1"
-            fill="#ffffff"
+            fill="#ffffff8f"
+            rx={10}
+            ry={10}
           ></rect>
           <g>
             <text

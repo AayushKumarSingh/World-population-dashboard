@@ -20,9 +20,11 @@ const MadeByCard = () => {
 
   return (
     <div style={cardStyle}>
-      <h2 style={{ fontSize: "20px", fontWeight: "600", align: "left" }}>Made by</h2>
+      <h2 style={{ fontSize: "20px", fontWeight: "600"}}>Made by</h2>
       <ul style={listStyle}>
         <li style={listItemStyle}>Aayush kumar Singh</li>
+        &
+        <li style={listItemStyle}>Anoop Kumar</li>
       </ul>
     </div>
   );

@@ -59,6 +59,8 @@ const BarChart = ({ width, height, data }) => {
               height={chartBottomY - yScale(d.population / oneMillion)}
               width={xScale.bandwidth()}
               fill="#6baed6"
+              onMouseEnter={(e) => e.target.setAttribute("fill", "#2171b5")} // Darker color on hover
+              onMouseLeave={(e) => e.target.setAttribute("fill", "#6baed6")} // Reset to original color
             />
           ))}
         </g>
