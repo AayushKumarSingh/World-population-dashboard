@@ -47,7 +47,7 @@ function App() {
         
         // Fetch data from the Flask server
         try {
-          const response = await fetch("http://127.0.0.1:5000/data");
+          const response = await fetch("https://world-population-dashboard-6raa.onrender.com/data");
           const data = await response.json();
           
           // Only update pieChartData from Flask, as we already set barChartData
